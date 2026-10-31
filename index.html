@@ -288,7 +288,7 @@
       <span class="chip mono" onclick="preencherRapido('KNSC11','FII','Papel High Grade',9.09,0.090)">KNSC11</span>
       <span class="chip mono" onclick="preencherRapido('CPLE3','ACAO','Energia Elétrica',17.15,0.08)">CPLE3</span>
       <span class="chip mono" onclick="preencherRapido('SAPR4','ACAO','Saneamento',7.72,0.04)">SAPR4</span>
-      <span class="chip mono" onclick="preencherRapido('BBAS3','ACAO','Bancos',23.62,0.22)">BBAS3</span>
+      <span class="chip mono" onclick="preencherRapido('BBAS3','ACAO','Bancos',16.47,0.15)">BBAS3</span>
       <span class="chip mono" onclick="preencherRapido('CMIG4','ACAO','Energia Elétrica',11.77,0.10)">CMIG4</span>
       <span class="chip mono" onclick="preencherRapido('POMO3','ACAO','Industrial / Ônibus',4.31,0.08)">POMO3</span>
     </div>
@@ -367,17 +367,17 @@ function mudarCarteiraAtiva() {
 carregarEstadoGeral();
 
 var baseFund = {
-  'POMO3':  { t:'ACAO', n:'Marcopolo ON', s:'Industrial / Carrocerias', p:4.31, pl:4.5, vp:3.95, dy:23.09, da:0.995, roe:27.4, lpa:0.96, f:'Graham √(22.5×LPA×VPA)', obs:'Líder em carrocerias de ônibus, forte geração de caixa, P/L muito descontado e altíssimo Dividend Yield de 23,09% nos últimos 12M.' },
-  'POMO4':  { t:'ACAO', n:'Marcopolo PN', s:'Industrial / Carrocerias', p:4.85, pl:5.0, vp:3.95, dy:20.51, da:0.995, roe:27.4, lpa:0.96, f:'Graham √(22.5×LPA×VPA)', obs:'Ação preferencial da Marcopolo com alta liquidez, ROE excelente acima de 27% e forte distribuição de proventos.' },
-  'SNEL11': { t:'FII', n:'Suno Energias Limpas', s:'Energia Solar', p:7.97, vp:8.15, dy:15.06, da:1.20, dm:0.10, f:'Bazin FII (DY 9%)', obs:'Usinas solares com contratos longos e excelente retorno isento de IR.' },
-  'GARE11': { t:'FII', n:'Guardian Real Estate', s:'Logística & Renda', p:8.62, vp:9.10, dy:11.55, da:0.996, dm:0.088, f:'Bazin FII (DY 9%)', obs:'Galpões e renda urbana com 0% de vacância e contratos atípicos.' },
-  'KNSC11': { t:'FII', n:'Kinea Securities', s:'Papel High Grade', p:9.09, vp:8.95, dy:11.88, da:1.08, dm:0.09, f:'Bazin FII (DY 9%)', obs:'Carteira pulverizada de CRIs High Grade atrelados ao IPCA e CDI.' },
+  'POMO3':  { t:'ACAO', n:'Marcopolo ON', s:'Industrial / Carrocerias', p:4.31, pl:4.5, vp:3.95, dy:23.09, da:0.995, roe:27.4, lpa:0.96, f:'Graham √(22.5×LPA×VPA)', obs:'Líder em carrocerias de ônibus, forte geração de caixa.' },
+  'POMO4':  { t:'ACAO', n:'Marcopolo PN', s:'Industrial / Carrocerias', p:4.85, pl:5.0, vp:3.95, dy:20.51, da:0.995, roe:27.4, lpa:0.96, f:'Graham √(22.5×LPA×VPA)', obs:'Ação preferencial com alta liquidez e ROE excelente.' },
+  'SNEL11': { t:'FII', n:'Suno Energias Limpas', s:'Energia Solar', p:7.97, vp:8.15, dy:15.06, da:1.20, dm:0.10, f:'Bazin FII (DY 9%)', obs:'Usinas solares com contratos longos.' },
+  'GARE11': { t:'FII', n:'Guardian Real Estate', s:'Logística & Renda', p:8.62, vp:9.10, dy:11.55, da:0.996, dm:0.088, f:'Bazin FII (DY 9%)', obs:'Galpões e renda urbana com 0% de vacância.' },
+  'KNSC11': { t:'FII', n:'Kinea Securities', s:'Papel High Grade', p:9.09, vp:8.95, dy:11.88, da:1.08, dm:0.09, f:'Bazin FII (DY 9%)', obs:'CRIs High Grade atrelados ao IPCA e CDI.' },
   'MXRF11': { t:'FII', n:'Maxi Renda', s:'Papel Híbrido', p:9.85, vp:9.45, dy:11.50, da:1.12, dm:0.095, f:'Bazin FII (DY 9%)', obs:'Fundo de altíssima liquidez na B3.' },
-  'HGLG11': { t:'FII', n:'Patria Logística', s:'Tijolo Logística', p:156.50, vp:155.20, dy:8.43, da:13.20, dm:1.10, f:'Bazin FII (DY 8.5%)', obs:'Referência em galpões logísticos premium.' },
-  'BBAS3':  { t:'ACAO', n:'Banco do Brasil', s:'Bancos', p:23.62, pl:4.9, vp:28.50, dy:10.5, roe:21.2, lpa:4.80, f:'Graham √(22.5×LPA×VPA)', obs:'Líder no agronegócio, ROE acima de 20% e negociando abaixo do patrimônio.' },
-  'SAPR4':  { t:'ACAO', n:'Sanepar PN', s:'Saneamento', p:7.72, pl:5.1, vp:9.20, dy:6.2, roe:16.5, lpa:1.51, f:'Graham √(22.5×LPA×VPA)', obs:'Setor perene e previsível, negociando com forte desconto patrimonial.' },
-  'CPLE3':  { t:'ACAO', n:'Copel ON', s:'Energia Elétrica', p:17.15, pl:8.8, vp:11.20, dy:6.8, roe:17.4, lpa:1.95, f:'Graham √(22.5×LPA×VPA)', obs:'Privatizada com ganho de eficiência e forte geração de caixa.' },
-  'CMIG4':  { t:'ACAO', n:'Cemig PN', s:'Energia Elétrica', p:11.77, pl:6.1, vp:10.50, dy:10.8, roe:18.5, lpa:1.93, f:'Graham √(22.5×LPA×VPA)', obs:'Forte pagadora de dividendos, P/L baixo e ROE elevado.' },
+  'HGLG11': { t:'FII', n:'Patria Logística', s:'Tijolo Logística', p:156.50, vp:155.20, dy:8.43, da:13.20, dm:1.10, f:'Bazin FII (DY 8.5%)', obs:'Referência em galpões logísticos.' },
+  'BBAS3':  { t:'ACAO', n:'Banco do Brasil', s:'Bancos', p:16.47, pl:4.9, vp:18.50, dy:10.5, roe:21.2, lpa:2.80, f:'Graham √(22.5×LPA×VPA)', obs:'Líder no agronegócio e forte pagador de proventos.' },
+  'SAPR4':  { t:'ACAO', n:'Sanepar PN', s:'Saneamento', p:7.72, pl:5.1, vp:9.20, dy:6.2, roe:16.5, lpa:1.51, f:'Graham √(22.5×LPA×VPA)', obs:'Setor perene e previsível.' },
+  'CPLE3':  { t:'ACAO', n:'Copel ON', s:'Energia Elétrica', p:17.15, pl:8.8, vp:11.20, dy:6.8, roe:17.4, lpa:1.95, f:'Graham √(22.5×LPA×VPA)', obs:'Privatizada com ganho de eficiência.' },
+  'CMIG4':  { t:'ACAO', n:'Cemig PN', s:'Energia Elétrica', p:11.77, pl:6.1, vp:10.50, dy:10.8, roe:18.5, lpa:1.93, f:'Graham √(22.5×LPA×VPA)', obs:'Forte pagadora de dividendos.' },
   'TAEE11': { t:'ACAO', n:'Taesa Unit', s:'Transmissão Energia', p:35.50, pl:9.8, vp:19.20, dy:9.2, roe:18.8, lpa:3.62, f:'Bazin (DY 8%)', obs:'Receitas previsíveis corrigidas pela inflação.' }
 };
 
@@ -812,14 +812,19 @@ async function buscarCotacoesWeb() {
     salvarEstado(true);
     alert('Cotações atualizadas via B3 (' + atualizados + ' ativos)!');
   } else {
+    var alterou = false;
     ativos.forEach(function(a){
       if ((a.classe==='FII'||a.classe==='ACAO') && baseFund[a.ticker]) {
         if (!state.marketMeta[a.ticker]) state.marketMeta[a.ticker] = {};
-        state.marketMeta[a.ticker].atual = baseFund[a.ticker].p;
+        // CORREÇÃO: Só insere o preço base se o ativo estiver completamente zerado/sem cotação
+        if (!state.marketMeta[a.ticker].atual) {
+          state.marketMeta[a.ticker].atual = baseFund[a.ticker].p;
+          alterou = true;
+        }
       }
     });
-    salvarEstado(true);
-    alert('Cotações sincronizadas com a base interna.');
+    if (alterou) salvarEstado(true);
+    alert('Aviso: Limite da API ou sem token da B3. Foram mantidos os seus valores manuais atuais e preenchidos os vazios com os preços base do sistema.');
   }
 }
 
