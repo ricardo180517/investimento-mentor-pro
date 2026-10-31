@@ -102,7 +102,7 @@
     <div style="display:flex; align-items:center; gap:16px;">
       <h2 id="titulo-pagina" style="font-size:16px; font-weight:600; color:#fff;">Visão Geral & Setores</h2>
       <div id="macro-indicadores" style="display:flex; gap:10px; font-size:10px; color:#94a3b8; background:#111827; padding:4px 8px; border-radius:6px; border:1px solid #1f2937;">
-        <span>SELIC: <strong id="macro-selic" style="color:#10b981;">11.25%</strong></span>
+        <span>SELIC: <strong id="macro-selic" style="color:#10b981; cursor:pointer;" onclick="var s=prompt('Informe a Selic atual (%):', document.getElementById('macro-selic').innerText.replace('%','')); if(s) document.getElementById('macro-selic').innerText=s+'%';" title="Clique para atualizar manualmente">14.25%</strong></span>
         <span>•</span>
         <span>IPCA (12M): <strong id="macro-ipca" style="color:#38bdf8;">4.50%</strong></span>
         <span>•</span>
@@ -825,10 +825,15 @@ async function buscarCotacoesWeb() {
 
 async function buscarMacroEconomia() {
   try {
-    var r = await fetch('https://brapi.dev/api/v2/prime-rate');
+    var url = 'https://brapi.dev/api/v2/macro?country=bra';
+    if (brapiToken) url += '&token=' + brapiToken;
+    var r = await fetch(url);
     var d = await r.json();
-    if(d && d.primeRate && d.primeRate[0]) {
-      document.getElementById('macro-selic').innerText = d.primeRate[0].value + '%';
+    if (d && d.macroEconomicData) {
+      var selicObj = d.macroEconomicData.find(function(item) { return item.name && item.name.toLowerCase().includes('selic'); });
+      if (selicObj && selicObj.value) {
+        document.getElementById('macro-selic').innerText = selicObj.value + '%';
+      }
     }
   } catch(e) {}
 }
