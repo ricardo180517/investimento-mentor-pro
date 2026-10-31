@@ -812,19 +812,17 @@ async function buscarCotacoesWeb() {
     salvarEstado(true);
     alert('Cotações atualizadas via B3 (' + atualizados + ' ativos)!');
   } else {
-    var alterou = false;
-    ativos.forEach(function(a){
-      if ((a.classe==='FII'||a.classe==='ACAO') && baseFund[a.ticker]) {
-        if (!state.marketMeta[a.ticker]) state.marketMeta[a.ticker] = {};
-        // CORREÇÃO: Só insere o preço base se o ativo estiver completamente zerado/sem cotação
-        if (!state.marketMeta[a.ticker].atual) {
+    // Nova trava com confirmação do utilizador para forçar a correção!
+    if (confirm('Falha na API da B3. Deseja aplicar as cotações corrigidas do sistema para substituir os valores antigos? (Isto vai atualizar a carteira)')) {
+      ativos.forEach(function(a){
+        if ((a.classe==='FII'||a.classe==='ACAO') && baseFund[a.ticker]) {
+          if (!state.marketMeta[a.ticker]) state.marketMeta[a.ticker] = {};
           state.marketMeta[a.ticker].atual = baseFund[a.ticker].p;
-          alterou = true;
         }
-      }
-    });
-    if (alterou) salvarEstado(true);
-    alert('Aviso: Limite da API ou sem token da B3. Foram mantidos os seus valores manuais atuais e preenchidos os vazios com os preços base do sistema.');
+      });
+      salvarEstado(true);
+      alert('Valores antigos apagados e corrigidos com sucesso!');
+    }
   }
 }
 
