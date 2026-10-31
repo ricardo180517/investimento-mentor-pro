@@ -90,9 +90,10 @@
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:3px; margin-top:2px;">
       <button type="button" class="btn-blue" onclick="salvarNoDrive(false)">Drive</button>
-      <button type="button" class="btn-dark" onclick="exportarPC()">PC</button>
-      <button type="button" class="btn-dark" style="color:#fda4af;" onclick="zerarTudo()">Zerar</button>
+      <button type="button" class="btn-dark" onclick="exportarPC()">Exportar</button>
+      <button type="button" class="btn-dark" style="color:#38bdf8;" onclick="document.getElementById('input-importar').click()">Importar</button>
     </div>
+    <input type="file" id="input-importar" class="hidden" accept=".json" onchange="importarPC(event)">
   </div>
 </aside>
 
