@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>MentorPro v3.6.0 | Enterprise Edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+  body { background: #090d16; color: #e2e8f0; display: flex; height: 100vh; overflow: hidden; }
+  .mono { font-family: Consolas, monospace; }
+  aside { width: 255px; background: #0d1322; border-right: 1px solid #1e293b; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; }
+  .logo-box { padding: 14px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(16,185,129,0.15); border: 1px solid #10b981; display: flex; align-items: center; justify-content: center; color: #10b981; font-weight: bold; }
+  nav { padding: 6px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; max-height: calc(100vh - 150px); }
+  .nav-btn { width: 100%; text-align: left; background: transparent; border: none; color: #94a3b8; padding: 8px 10px; border-radius: 7px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .nav-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+  .nav-btn.active { background: rgba(16,185,129,0.15); color: #10b981; border-left: 3px solid #10b981; font-weight: 600; }
+  .sidebar-footer { padding: 8px; border-top: 1px solid #1e293b; display: flex; flex-direction: column; gap: 4px; font-size: 10.5px; }
+  main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+  header { height: 56px; border-bottom: 1px solid #1e293b; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; background: #0d1322; position: sticky; top: 0; z-index: 10; }
+  .container { padding: 20px; max-width: 1260px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1.3fr; gap: 14px; }
+  .btn-green { background: #10b981; color: #052e16; font-weight: 700; border: none; padding: 8px 13px; border-radius: 7px; cursor: pointer; font-size: 12px; }
+  .btn-blue { background: #2563eb; color: #fff; font-weight: 600; border: none; padding: 5px 8px; border-radius: 5px; cursor: pointer; font-size: 10.5px; }
+  .btn-cyan { background: #0ea5e9; color: #fff; font-weight: 700; border: none; padding: 8px 12px; border-radius: 7px; cursor: pointer; font-size: 12px; }
+  .btn-dark { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 5px 8px; border-radius: 5px; cursor: pointer; font-size: 10.5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; padding: 9px 10px; background: #0d1322; color: #94a3b8; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #1f2937; }
+  td { padding: 9px 10px; border-bottom: 1px solid #1f2937; }
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  input, select { background: #090d16; border: 1px solid #334155; color: #fff; padding: 6px 9px; border-radius: 6px; font-size: 12px; width: 100%; outline: none; }
+  label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 3px; }
+  .hidden { display: none !important; }
+  .badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; display: inline-block; }
+  .b-SELIC { background: rgba(168,85,247,0.2); color: #d8b4fe; }
+  .b-IPCA { background: rgba(59,130,246,0.2); color: #93c5fd; }
+  .b-FII { background: rgba(245,158,11,0.2); color: #fcd34d; }
+  .b-ACAO { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.78); display: flex; align-items: center; justify-content: center; z-index: 50; }
+  .modal-box { background: #111827; border: 1px solid #374151; border-radius: 12px; width: 100%; max-width: 480px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .chip { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 3px 7px; border-radius: 4px; font-size: 11px; cursor: pointer; display: inline-block; }
+  .chip:hover { border-color: #10b981; color: #10b981; }
+  .bar-bg { width: 100%; height: 7px; background: #1e293b; border-radius: 99px; overflow: hidden; margin: 5px 0; }
+  .ind-pill { background: #090d16; border: 1px solid #1e293b; padding: 6px; border-radius: 6px; text-align: center; }
+  .ind-label { font-size: 9px; color: #94a3b8; text-transform: uppercase; display: block; }
+  .ind-val { font-size: 12.5px; font-weight: bold; color: #fff; font-family: Consolas, monospace; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+  .pulse { animation: pulse 1.5s infinite; }
+</style>
+</head>
+<body>
+
+<aside>
+  <div>
+    <div class="logo-box">
+      <div class="logo-icon">👑</div>
+      <div>
+        <div style="font-weight:700; font-size:14px; color:#fff;">Mentor<span style="color:#10b981">Pro</span> <span class="mono" style="font-size:9px; color:#38bdf8;">v3.6.0</span></div>
+        <div style="font-size:9.5px; color:#10b981;">● Enterprise Cloud</div>
+      </div>
+    </div>
+    <div style="padding: 8px 12px; border-bottom:1px solid #1e293b; background:#090d16;">
+      <label>Carteira Ativa</label>
+      <select id="select-carteira" onchange="mudarCarteiraAtiva()" style="font-weight:bold; color:#38bdf8;">
+        <option value="Principal">💼 Carteira Principal</option>
+        <option value="Aposentadoria">🎯 Foco Aposentadoria</option>
+        <option value="Dividendos">🪙 Foco Dividendos</option>
+      </select>
+    </div>
+    <nav>
+      <button type="button" class="nav-btn active" id="tab-dashboard" onclick="mudarAba('dashboard')">📊 Visão Geral & Setores</button>
+      <button type="button" class="nav-btn" id="tab-portfolio" onclick="mudarAba('portfolio')">💼 Carteira & Preço Médio</button>
+      <button type="button" class="nav-btn" id="tab-aportes" onclick="mudarAba('aportes')">🤖 Aporte Inteligente 2.0</button>
+      <button type="button" class="nav-btn" id="tab-wishlist" onclick="mudarAba('wishlist')">⭐ Wishlist & Raio-X IA</button>
+      <button type="button" class="nav-btn" id="tab-magic" onclick="mudarAba('magic')">🔥 Rastreador Magic Number</button>
+      <button type="button" class="nav-btn" id="tab-dividendos" onclick="mudarAba('dividendos')">🪙 Controle de Dividendos</button>
+      <button type="button" class="nav-btn" id="tab-timeline" onclick="mudarAba('timeline')">📈 Evolução & Timeline</button>
+      <button type="button" class="nav-btn" id="tab-rebalance" onclick="mudarAba('rebalance')">⚖️ Rebalanceamento</button>
+      <button type="button" class="nav-btn" id="tab-retire" onclick="mudarAba('retire')">🎯 Aposentadoria & Stress</button>
+      <button type="button" class="nav-btn" id="tab-ordens" onclick="mudarAba('ordens')">📝 Histórico de Ordens</button>
+    </nav>
+  </div>
+  <div class="sidebar-footer">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="color:#93c5fd; font-weight:700;">☁️ SYNC & API</span>
+      <span onclick="abrirModalCloud()" style="color:#38bdf8; text-decoration:underline; cursor:pointer;">Configurar</span>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:3px; margin-top:2px;">
+      <button type="button" class="btn-blue" onclick="salvarNoDrive(false)">Drive</button>
+      <button type="button" class="btn-dark" onclick="exportarPC()">PC</button>
+      <button type="button" class="btn-dark" style="color:#fda4af;" onclick="zerarTudo()">Zerar</button>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <header>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <h2 id="titulo-pagina" style="font-size:16px; font-weight:600; color:#fff;">Visão Geral & Setores</h2>
+      <div id="macro-indicadores" style="display:flex; gap:10px; font-size:10px; color:#94a3b8; background:#111827; padding:4px 8px; border-radius:6px; border:1px solid #1f2937;">
+        <span>SELIC: <strong id="macro-selic" style="color:#10b981;">11.25%</strong></span>
+        <span>•</span>
+        <span>IPCA (12M): <strong id="macro-ipca" style="color:#38bdf8;">4.50%</strong></span>
+        <span>•</span>
+        <span>DÓLAR: <strong id="macro-dolar" style="color:#fbbf24;">R$ 5.40</strong></span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="text-right">
+        <span style="font-size:10px; color:#94a3b8; display:block;">Patrimônio Consolidado</span>
+        <span id="header-total" class="mono" style="font-size:16px; font-weight:700; color:#10b981;">R$ 0,00</span>
+      </div>
+      <button type="button" class="btn-cyan" onclick="buscarCotacoesWeb()">🔄 Atualizar B3</button>
+      <button type="button" class="btn-green" onclick="abrirModalOrdem()">+ Lançar Compra</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="banner-vazio" class="card" style="border-color:#10b981; display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <h3 style="font-size:13.5px; color:#fff;">✨ MentorPro Enterprise v3.6.0 Ativo!</h3>
+        <p style="font-size:11px; color:#cbd5e1;">Puxe seus dados do Google Drive ou cadastre sua primeira ordem.</p>
+      </div>
+      <button type="button" class="btn-green" onclick="puxarDoDrive()">Puxar Dados do Drive</button>
+    </div>
+
+    <section id="aba-dashboard" style="display:flex; flex-direction:column; gap:14px;">
+      <div class="grid-4">
+        <div class="card"><span style="font-size:10px; color:#94a3b8;">PATRIMÔNIO TOTAL</span><div id="kpi-patrimonio" class="mono" style="font-size:19px; font-weight:700; color:#fff; margin:4px 0;">R$ 0,00</div><div id="kpi-investido" style="font-size:10px; color:#94a3b8;">Custo: R$ 0,00</div></div>
+        <div class="card"><span style="font-size:10px; color:#94a3b8;">LUCRO VALORIZAÇÃO</span><div id="kpi-lucro" class="mono" style="font-size:19px; font-weight:700; color:#10b981; margin:4px 0;">+R$ 0,00</div><div id="kpi-rentab" style="font-size:10px; color:#94a3b8;">0,00%</div></div>
+        <div class="card"><span style="font-size:10px; color:#94a3b8;">RENDA PASSIVA MÊS</span><div id="kpi-renda" class="mono" style="font-size:19px; font-weight:700; color:#fbbf24; margin:4px 0;">R$ 0,00 / mês</div><div id="kpi-renda-ano" style="font-size:10px; color:#94a3b8;">Isento</div></div>
+        <div class="card"><span style="font-size:10px; color:#94a3b8;">RESERVA EMERGÊNCIA</span><div id="kpi-reserva" class="mono" style="font-size:19px; font-weight:700; color:#fff; margin:4px 0;">R$ 0,00</div><div id="kpi-reserva-meta" style="font-size:10px; color:#c084fc;">Meta R$ 2k</div></div>
+      </div>
+      <div class="grid-3">
+        <div class="card"><h3 style="font-size:13px; color:#fff; margin-bottom:8px;">Divisão por Classe</h3><div id="painel-classes" style="display:flex; flex-direction:column; gap:8px;"></div></div>
+        <div class="card"><h3 style="font-size:13px; color:#fff; margin-bottom:8px;">🥧 Diversificação Setores</h3><div id="painel-setores" style="display:flex; flex-direction:column; gap:7px; max-height:180px; overflow-y:auto;"></div></div>
+        <div class="card"><h3 style="font-size:13px; color:#fff; margin-bottom:8px;">Posição por Ativo</h3><div id="painel-barras-ativos" style="display:flex; flex-direction:column; gap:7px; max-height:180px; overflow-y:auto;"></div></div>
+      </div>
+      <div class="card" style="border-left:4px solid #10b981;"><p id="texto-mentor" style="font-size:12px; color:#cbd5e1;"></p></div>
+    </section>
+
+    <section id="aba-portfolio" class="hidden">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <h3 style="font-size:14px; color:#fff;">Carteira Consolidada & Preço Médio</h3>
+          <button type="button" class="btn-green" onclick="abrirModalOrdem()">+ Adicionar Compra</button>
+        </div>
+        <table>
+          <thead><tr><th>Ativo</th><th>Classe / Setor</th><th class="text-right">Qtd</th><th class="text-right">Preço Médio</th><th class="text-right">Cotação Atual</th><th class="text-right">Div./Mês</th><th class="text-right">Custo Total</th><th class="text-right">Saldo Atual</th><th class="text-right">Lucro</th><th class="text-right">%</th></tr></thead>
+          <tbody id="tabela-carteira"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="aba-aportes" class="hidden">
+      <div class="grid-2">
+        <div class="card" style="display:flex; flex-direction:column; gap:10px;">
+          <h3 style="font-size:14px; color:#10b981;">🤖 Motor de Aporte Inteligente 2.0</h3>
+          <div><label>Aporte do Bolso (R$)</label><input type="number" id="in-aporte" value="500" oninput="gerarAporteInteligente()"></div>
+          <div><label>Dividendos Acumulados (R$)</label><input type="number" id="in-div-reinv" value="5.62" step="0.5" oninput="gerarAporteInteligente()"></div>
+          <div>
+            <label>Estratégia do Mês</label>
+            <select id="in-estrategia-aporte" onchange="gerarAporteInteligente()">
+              <option value="BALANCEADA">⚖️ Balanceada (FIIs + Ações + Tesouro)</option>
+              <option value="FIIS">🔥 Foco Bola de Neve (FIIs + Reserva)</option>
+              <option value="ACOES">💎 Foco Desconto (Ações + Reserva)</option>
+              <option value="SOMENTE_FIIS">🌟 Somente FIIs (100% Fundos Imobiliários)</option>
+              <option value="SOMENTE_ACOES">🎯 Somente Ações (100% Ações da Bolsa)</option>
+            </select>
+          </div>
+          <div style="background:#090d16; padding:10px; border-radius:8px; display:flex; justify-content:space-between;"><span>Total Disponível:</span><strong id="aporte-disp" class="mono" style="color:#10b981;">R$ 505,62</strong></div>
+        </div>
+        <div class="card"><h3 style="font-size:14px; color:#fff; margin-bottom:10px;">🛒 Carrinho Sugerido pelo Mentor</h3><div id="lista-sugestao-aporte" style="display:flex; flex-direction:column; gap:8px;"></div></div>
+      </div>
+    </section>
+
+    <section id="aba-wishlist" class="hidden" style="display:flex; flex-direction:column; gap:14px;">
+      <div class="card" style="border:1px solid #38bdf8;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <h3 style="font-size:14px; color:#38bdf8;">🤖 Raio-X Fundamentalista IA: Indicadores & Recomendação</h3>
+          <button type="button" class="btn-dark" onclick="abrirModalCloud()" style="color:#38bdf8; border-color:#38bdf8;">⚙️ Configurar Token B3 & Drive</button>
+        </div>
+        <p style="font-size:11px; color:#94a3b8; margin-bottom:8px;">Pesquise qualquer papel da B3 ou edite cotações diretamente na tabela abaixo:</p>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="w-ticker" class="mono" style="text-transform:uppercase; max-width:150px;" placeholder="Ex: POMO3, SNEL11">
+          <button type="button" class="btn-cyan" onclick="adicionarWishlistIA()">🔍 Analisar Papel</button>
+          <span class="chip mono" onclick="atalhoWishlist('POMO3')">POMO3</span>
+          <span class="chip mono" onclick="atalhoWishlist('POMO4')">POMO4</span>
+          <span class="chip mono" onclick="atalhoWishlist('SNEL11')">SNEL11</span>
+          <span class="chip mono" onclick="atalhoWishlist('GARE11')">GARE11</span>
+          <span class="chip mono" onclick="atalhoWishlist('KNSC11')">KNSC11</span>
+          <span class="chip mono" onclick="atalhoWishlist('BBAS3')">BBAS3</span>
+          <span class="chip mono" onclick="atalhoWishlist('SAPR4')">SAPR4</span>
+          <span class="chip mono" onclick="atalhoWishlist('CPLE3')">CPLE3</span>
+          <span class="chip mono" onclick="atalhoWishlist('CMIG4')">CMIG4</span>
+          <span class="chip mono" onclick="atalhoWishlist('ITSA4')">ITSA4</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:13.5px; color:#fff; margin-bottom:8px;">⭐ Tabela Comparativa de Descontos (Editável)</h3>
+        <table>
+          <thead><tr><th>Ativo</th><th class="text-right">Cotação Atual (R$)</th><th class="text-right">Preço Teto IA (R$)</th><th class="text-right">Margem</th><th>Fórmula</th><th class="text-center">Decisão IA</th><th class="text-center">X</th></tr></thead>
+          <tbody id="tabela-wishlist"></tbody>
+        </table>
+      </div>
+      <div id="cards-analise-wishlist" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </section>
+
+    <section id="aba-magic" class="hidden"><div id="grid-magic" class="grid-3"></div></section>
+
+    <section id="aba-dividendos" class="hidden" style="display:flex; flex-direction:column; gap:14px;">
+      <div class="grid-3">
+        <div class="card"><span style="font-size:10px; color:#94a3b8;">TOTAL ACUMULADO</span><div id="div-geral" class="mono" style="font-size:19px; font-weight:700; color:#fbbf24;">R$ 0,00</div></div>
+        <div class="card"><span style="font-size:10px; color:#94a3b8;">MÉDIA MENSAL</span><div id="div-media" class="mono" style="font-size:19px; font-weight:700; color:#10b981;">R$ 0,00</div></div>
+        <div class="card"><span style="font-size:10px; color:#94a3b8;">MAIOR PAGADOR</span><div id="div-top" class="mono" style="font-size:17px; font-weight:700; color:#fff;">—</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-size:13.5px; color:#fff;">Lançar Provento</h3>
+          <div><label>Mês</label><input type="month" id="d-mes" value="2026-10"></div>
+          <div><label>Ativo</label><input type="text" id="d-ticker" class="mono" style="text-transform:uppercase;"></div>
+          <div><label>Valor (R$)</label><input type="number" id="d-valor" step="0.01"></div>
+          <button type="button" class="btn-green" onclick="salvarDividendo()">+ Salvar Dividendo</button>
+        </div>
+        <div class="card"><table><thead><tr><th>Mês</th><th>Ativo</th><th class="text-right">Valor</th><th class="text-center">X</th></tr></thead><tbody id="tabela-div-extrato"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="aba-timeline" class="hidden" style="display:flex; flex-direction:column; gap:14px;">
+      <div class="card"><h3 style="font-size:13.5px; color:#fff;">📈 Evolução Patrimonial</h3><div id="grafico-timeline" style="display:flex; align-items:flex-end; gap:12px; height:160px; padding-top:16px;"></div></div>
+      <div class="card"><table><thead><tr><th>Mês</th><th class="text-right">Patrimônio</th><th class="text-right">Custo</th><th class="text-right">Lucro</th></tr></thead><tbody id="tabela-timeline"></tbody></table></div>
+    </section>
+
+    <section id="aba-rebalance" class="hidden">
+      <div class="grid-2">
+        <div class="card" style="display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-size:13.5px; color:#fff;">Metas por Classe (%)</h3>
+          <div><label>Tesouro Reserva (%)</label><input type="number" id="rb-selic" value="30" oninput="calcularRebalanceamento()"></div>
+          <div><label>Tesouro IPCA+ (%)</label><input type="number" id="rb-ipca" value="10" oninput="calcularRebalanceamento()"></div>
+          <div><label>FIIs (%)</label><input type="number" id="rb-fiis" value="30" oninput="calcularRebalanceamento()"></div>
+          <div><label>Ações (%)</label><input type="number" id="rb-acoes" value="30" oninput="calcularRebalanceamento()"></div>
+          <div><label>Novo Aporte (R$)</label><input type="number" id="rb-aporte" value="1000" oninput="calcularRebalanceamento()"></div>
+        </div>
+        <div class="card"><h3 style="font-size:13.5px; color:#fff; margin-bottom:8px;">⚖️ Diagnóstico</h3><div id="painel-rebalance" style="display:flex; flex-direction:column; gap:8px;"></div></div>
+      </div>
+    </section>
+
+    <section id="aba-retire" class="hidden">
+      <div class="grid-2">
+        <div class="card" style="display:flex; flex-direction:column; gap:10px;">
+          <h3 style="font-size:13.5px; color:#fff;">Simulador de Independência & Stress</h3>
+          <div><label>Renda Desejada (R$/mês)</label><input type="number" id="ret-custo" value="5000" oninput="calcularAposentadoria()"></div>
+          <div><label>Aporte Mensal (R$)</label><input type="number" id="ret-aporte" value="1500" oninput="calcularAposentadoria()"></div>
+          <div><label>DY Anual Esperado (%)</label><input type="number" id="ret-dy" value="8.5" step="0.5" oninput="calcularAposentadoria()"></div>
+          <div><label>Simulação de Crash de Mercado (-%)</label><input type="number" id="ret-stress" value="0" step="5" oninput="calcularAposentadoria()" placeholder="Ex: 20 para queda de 20%"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:13.5px; color:#10b981;">🎯 Projeção & Impacto</h3>
+          <div id="ret-patrimonio-alvo" class="mono" style="font-size:20px; font-weight:700; margin:6px 0;">R$ 0,00</div>
+          <div id="ret-tempo" class="mono" style="font-size:20px; font-weight:700; color:#fbbf24;">0 anos</div>
+          <div id="ret-stress-res" style="font-size:11.5px; color:#38bdf8; margin-top:8px; font-weight:600;"></div>
+          <p id="ret-obs" style="font-size:11px; color:#94a3b8; margin-top:6px;"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="aba-ordens" class="hidden">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><h3 style="font-size:13.5px; color:#fff;">Histórico de Compras</h3><button type="button" class="btn-green" onclick="abrirModalOrdem()">+ Novo</button></div>
+        <table><thead><tr><th>Data</th><th>Ativo</th><th>Classe</th><th class="text-right">Qtd</th><th class="text-right">Preço</th><th class="text-right">Taxas</th><th class="text-right">Total</th><th class="text-center">X</th></tr></thead><tbody id="tabela-ordens"></tbody></table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="modal-ordem" class="modal-bg hidden">
+  <div class="modal-box">
+    <div style="display:flex; justify-content:space-between;"><h3 style="font-size:14px; color:#fff;">Lançar Compra</h3><button type="button" class="btn-dark" onclick="fecharModalOrdem()">✕</button></div>
+    <div style="display:flex; flex-wrap:wrap; gap:4px;">
+      <span class="chip mono" onclick="preencherRapido('TESOURO RESERVA','SELIC','Reserva de Emergência',1,0)">Tesouro Reserva</span>
+      <span class="chip mono" onclick="preencherRapido('TESOURO IPCA+ 2032','IPCA','Proteção Inflação',1,0)">IPCA+ 2032</span>
+      <span class="chip mono" onclick="preencherRapido('GARE11','FII','Tijolo Logística',8.62,0.088)">GARE11</span>
+      <span class="chip mono" onclick="preencherRapido('SNEL11','FII','Energia Solar',7.97,0.100)">SNEL11</span>
+      <span class="chip mono" onclick="preencherRapido('KNSC11','FII','Papel High Grade',9.09,0.090)">KNSC11</span>
+      <span class="chip mono" onclick="preencherRapido('CPLE3','ACAO','Energia Elétrica',17.15,0.08)">CPLE3</span>
+      <span class="chip mono" onclick="preencherRapido('SAPR4','ACAO','Saneamento',7.72,0.04)">SAPR4</span>
+      <span class="chip mono" onclick="preencherRapido('BBAS3','ACAO','Bancos',23.62,0.22)">BBAS3</span>
+      <span class="chip mono" onclick="preencherRapido('CMIG4','ACAO','Energia Elétrica',11.77,0.10)">CMIG4</span>
+      <span class="chip mono" onclick="preencherRapido('POMO3','ACAO','Industrial / Ônibus',4.31,0.08)">POMO3</span>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div><label>Data</label><input type="date" id="o-data"></div>
+      <div><label>Ativo</label><input type="text" id="o-ticker" class="mono" style="text-transform:uppercase;" oninput="simularPM()"></div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div><label>Classe</label><select id="o-classe" onchange="verificarClasseRendaFixa()"><option value="FII">FII</option><option value="ACAO">Ação</option><option value="SELIC">Tesouro Reserva</option><option value="IPCA">Tesouro IPCA+</option></select></div>
+      <div><label>Setor</label><input type="text" id="o-setor"></div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;" id="bloco-qtd-preco">
+      <div><label>Qtd</label><input type="number" id="o-qtd" step="0.01" oninput="simularPM()"></div>
+      <div><label>Preço (R$)</label><input type="number" id="o-preco" step="0.01" oninput="simularPM()"></div>
+      <div><label>Taxas (R$)</label><input type="number" id="o-taxas" step="0.01" value="0" oninput="simularPM()"></div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div><label>Cotação Atual (R$)</label><input type="number" id="o-atual" step="0.01"></div>
+      <div><label>Dividendo/Cota (R$)</label><input type="number" id="o-div" step="0.001"></div>
+    </div>
+    <div style="background:#090d16; padding:8px; border-radius:6px; font-size:11px; display:flex; justify-content:space-between;">
+      <span>Total: <strong id="prev-custo" class="mono">R$ 0,00</strong></span>
+      <span>Novo PM: <strong id="prev-pm" class="mono" style="color:#10b981;">R$ 0,00</strong></span>
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:8px;">
+      <button type="button" class="btn-dark" onclick="fecharModalOrdem()">Cancelar</button>
+      <button type="button" class="btn-green" onclick="confirmarOrdem()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-cloud" class="modal-bg hidden">
+  <div class="modal-box">
+    <h3 style="font-size:14px; color:#fff;">☁️ Google Drive & Token B3 (Brapi.dev)</h3>
+    <div><label>URL do Google Apps Script (Drive Sync)</label><input type="text" id="in-cloud-url" class="mono" placeholder="https://script.google.com/..."></div>
+    <div><label>Token Gratuito Brapi.dev (Opcional para 100% da B3 ao vivo)</label><input type="text" id="in-brapi-token" class="mono" placeholder="Cole seu token de brapi.dev aqui"></div>
+    <div style="display:flex; justify-content:flex-end; gap:8px;">
+      <button type="button" class="btn-dark" onclick="fecharModalCloud()">Fechar</button>
+      <button type="button" class="btn-blue" onclick="salvarConfigCloud()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var abas = ['dashboard','portfolio','aportes','wishlist','magic','dividendos','timeline','rebalance','retire','ordens'];
+var carteiraAtiva = 'Principal';
+var statePorCarteira = { 'Principal': { orders: [], marketMeta: {}, dividendos: [], timeline: [], wishlist: [] } };
+var state = statePorCarteira['Principal'];
+var ultimoCarrinho = [];
+var cloudUrl = localStorage.getItem('mp_cloud_v360') || '';
+var brapiToken = localStorage.getItem('mp_brapi_token') || '';
+
+function carregarEstadoGeral() {
+  try {
+    var raw = localStorage.getItem('mp_multistate_v360');
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') { statePorCarteira = parsed; }
+    } else {
+      var legacy = localStorage.getItem('mp_state_v359') || localStorage.getItem('mp_state_v358');
+      if (legacy) { statePorCarteira['Principal'] = JSON.parse(legacy); }
+    }
+  } catch(e) {}
+  state = statePorCarteira[carteiraAtiva] || (statePorCarteira[carteiraAtiva] = { orders: [], marketMeta: {}, dividendos: [], timeline: [], wishlist: [] });
+}
+
+function mudarCarteiraAtiva() {
+  carteiraAtiva = document.getElementById('select-carteira').value;
+  if (!statePorCarteira[carteiraAtiva]) {
+    statePorCarteira[carteiraAtiva] = { orders: [], marketMeta: {}, dividendos: [], timeline: [], wishlist: [] };
+  }
+  state = statePorCarteira[carteiraAtiva];
+  renderizarTudo();
+}
+
+carregarEstadoGeral();
+
+var baseFund = {
+  'POMO3':  { t:'ACAO', n:'Marcopolo ON', s:'Industrial / Carrocerias', p:4.31, pl:4.5, vp:3.95, dy:23.09, da:0.995, roe:27.4, lpa:0.96, f:'Graham √(22.5×LPA×VPA)', obs:'Líder em carrocerias de ônibus, forte geração de caixa, P/L muito descontado e altíssimo Dividend Yield de 23,09% nos últimos 12M.' },
+  'POMO4':  { t:'ACAO', n:'Marcopolo PN', s:'Industrial / Carrocerias', p:4.85, pl:5.0, vp:3.95, dy:20.51, da:0.995, roe:27.4, lpa:0.96, f:'Graham √(22.5×LPA×VPA)', obs:'Ação preferencial da Marcopolo com alta liquidez, ROE excelente acima de 27% e forte distribuição de proventos.' },
+  'SNEL11': { t:'FII', n:'Suno Energias Limpas', s:'Energia Solar', p:7.97, vp:8.15, dy:15.06, da:1.20, dm:0.10, f:'Bazin FII (DY 9%)', obs:'Usinas solares com contratos longos e excelente retorno isento de IR.' },
+  'GARE11': { t:'FII', n:'Guardian Real Estate', s:'Logística & Renda', p:8.62, vp:9.10, dy:11.55, da:0.996, dm:0.088, f:'Bazin FII (DY 9%)', obs:'Galpões e renda urbana com 0% de vacância e contratos atípicos.' },
+  'KNSC11': { t:'FII', n:'Kinea Securities', s:'Papel High Grade', p:9.09, vp:8.95, dy:11.88, da:1.08, dm:0.09, f:'Bazin FII (DY 9%)', obs:'Carteira pulverizada de CRIs High Grade atrelados ao IPCA e CDI.' },
+  'MXRF11': { t:'FII', n:'Maxi Renda', s:'Papel Híbrido', p:9.85, vp:9.45, dy:11.50, da:1.12, dm:0.095, f:'Bazin FII (DY 9%)', obs:'Fundo de altíssima liquidez na B3.' },
+  'HGLG11': { t:'FII', n:'Patria Logística', s:'Tijolo Logística', p:156.50, vp:155.20, dy:8.43, da:13.20, dm:1.10, f:'Bazin FII (DY 8.5%)', obs:'Referência em galpões logísticos premium.' },
+  'BBAS3':  { t:'ACAO', n:'Banco do Brasil', s:'Bancos', p:23.62, pl:4.9, vp:28.50, dy:10.5, roe:21.2, lpa:4.80, f:'Graham √(22.5×LPA×VPA)', obs:'Líder no agronegócio, ROE acima de 20% e negociando abaixo do patrimônio.' },
+  'SAPR4':  { t:'ACAO', n:'Sanepar PN', s:'Saneamento', p:7.72, pl:5.1, vp:9.20, dy:6.2, roe:16.5, lpa:1.51, f:'Graham √(22.5×LPA×VPA)', obs:'Setor perene e previsível, negociando com forte desconto patrimonial.' },
+  'CPLE3':  { t:'ACAO', n:'Copel ON', s:'Energia Elétrica', p:17.15, pl:8.8, vp:11.20, dy:6.8, roe:17.4, lpa:1.95, f:'Graham √(22.5×LPA×VPA)', obs:'Privatizada com ganho de eficiência e forte geração de caixa.' },
+  'CMIG4':  { t:'ACAO', n:'Cemig PN', s:'Energia Elétrica', p:11.77, pl:6.1, vp:10.50, dy:10.8, roe:18.5, lpa:1.93, f:'Graham √(22.5×LPA×VPA)', obs:'Forte pagadora de dividendos, P/L baixo e ROE elevado.' },
+  'TAEE11': { t:'ACAO', n:'Taesa Unit', s:'Transmissão Energia', p:35.50, pl:9.8, vp:19.20, dy:9.2, roe:18.8, lpa:3.62, f:'Bazin (DY 8%)', obs:'Receitas previsíveis corrigidas pela inflação.' }
+};
+
+function normTk(tk) {
+  var t = (tk || '').trim().toUpperCase();
+  var map = { 'SNELL11':'SNEL11', 'GARRE11':'GARE11', 'BBASS3':'BBAS3' };
+  return map[t] || t;
+}
+
+function brl(v) { return (Number(v) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+
+function calcTeto(tk, pFall) {
+  var b = baseFund[tk];
+  if (b) {
+    if (b.lpa && b.vp) return Math.sqrt(22.5 * b.lpa * b.vp);
+    if (b.da) return b.da / 0.09;
+  }
+  return (pFall || 10) * 1.15;
+}
+
+function salvarEstado(sync) {
+  statePorCarteira[carteiraAtiva] = state;
+  localStorage.setItem('mp_multistate_v360', JSON.stringify(statePorCarteira));
+  renderizarTudo();
+  if (sync && cloudUrl) salvarNoDrive(true);
+}
+
+function mudarAba(nome) {
+  abas.forEach(function(a) {
+    document.getElementById('aba-' + a).classList.add('hidden');
+    document.getElementById('tab-' + a).classList.remove('active');
+  });
+  document.getElementById('aba-' + nome).classList.remove('hidden');
+  document.getElementById('tab-' + nome).classList.add('active');
+  document.getElementById('titulo-pagina').innerText = nome.toUpperCase();
+}
+
+function consolidarAtivos() {
+  var map = {};
+  (state.orders || []).forEach(function(o) {
+    var rf = (o.classe === 'SELIC' || o.classe === 'IPCA');
+    if (!map[o.ticker]) {
+      var m = (state.marketMeta || {})[o.ticker] || {};
+      map[o.ticker] = { ticker: o.ticker, classe: m.classe || o.classe || 'FII', setor: m.setor || o.setor || 'Geral', qtd: 0, custoTotal: 0, atual: m.atual !== undefined ? Number(m.atual) : (rf ? 1 : Number(o.preco)), divCota: m.divCota !== undefined ? Number(m.divCota) : 0 };
+    }
+    var val = rf ? (Number(o.preco) > 1 ? Number(o.qtd)*Number(o.preco) : Number(o.qtd)) : Number(o.qtd);
+    map[o.ticker].qtd += val;
+    map[o.ticker].custoTotal += rf ? val : (Number(o.qtd)*Number(o.preco) + (Number(o.taxas)||0));
+  });
+  return Object.values(map).filter(function(a){ return a.qtd > 0; }).map(function(a){
+    a.pm = (a.classe === 'SELIC' || a.classe === 'IPCA') ? 1 : (a.custoTotal / a.qtd);
+    return a;
+  });
+}
+
+function diagnosticarWish(tk, atu, teto) {
+  var b = baseFund[tk];
+  var desc = teto > 0 ? ((teto - atu) / teto) * 100 : 0;
+  var isF = (b && b.t === 'FII') || (tk.endsWith('11') && tk !== 'TAEE11');
+  var vp = b ? b.vp : atu;
+  var pvp = vp > 0 ? (atu / vp) : 1;
+  var pl = (b && b.lpa) ? (atu / b.lpa) : 7.0;
+  var dy = b ? (b.da ? (b.da / atu)*100 : b.dy) : 9.0;
+  var roe = (b && b.roe) ? b.roe : 15.0;
+  var nome = b ? b.n : tk;
+  var obs = b ? b.obs : 'Edite a cotação ou o preço teto diretamente na tabela para simular.';
+
+  if (desc >= 10) {
+    return { isF:isF, nome:nome, pvp:pvp, pl:pl, dy:dy, roe:roe, vp:vp, dm:b?b.dm:0.08, desc:desc, cor:'#10b981', bg:'rgba(16,185,129,0.2)', st:'🟢 COMPRAR', pulse: desc >= 15 ? 'pulse' : '',
+      txt: '<strong>POR QUE COMPRAR:</strong> <strong>' + tk + ' (' + nome + ')</strong> está cotado a <strong>' + brl(atu) + '</strong>, com excelente margem de segurança de <strong>' + desc.toFixed(1) + '% abaixo do Preço Teto (' + brl(teto) + ')</strong>. P/VP de <strong>' + pvp.toFixed(2) + 'x</strong> e Dividend Yield de <strong>' + dy.toFixed(2) + '% a.a.</strong> ' + obs };
+  }
+  if (desc >= 0) {
+    return { isF:isF, nome:nome, pvp:pvp, pl:pl, dy:dy, roe:roe, vp:vp, dm:b?b.dm:0.08, desc:desc, cor:'#fbbf24', bg:'rgba(245,158,11,0.2)', st:'🟡 AGUARDAR', pulse: '',
+      txt: '<strong>POR QUE AGUARDAR:</strong> <strong>' + tk + ' (' + nome + ')</strong> possui bons fundamentos, mas a <strong>' + brl(atu) + '</strong> está muito próximo do Preço Teto de <strong>' + brl(teto) + '</strong> (margem curta de ' + desc.toFixed(1) + '%). Ideal aguardar uma correção.' };
+  }
+  return { isF:isF, nome:nome, pvp:pvp, pl:pl, dy:dy, roe:roe, vp:vp, dm:b?b.dm:0.08, desc:desc, cor:'#f43f5e', bg:'rgba(244,63,94,0.2)', st:'🔴 NÃO COMPRAR', pulse: '',
+    txt: '<strong>POR QUE NÃO COMPRAR:</strong> A cotação atual de <strong>' + brl(atu) + '</strong> ultrapassou o Preço Teto de segurança (<strong>' + brl(teto) + '</strong>), ficando <strong>' + Math.abs(desc).toFixed(1) + '% acima do limite</strong>.' };
+}
+
+function atalhoWishlist(tk) {
+  document.getElementById('w-ticker').value = tk;
+  adicionarWishlistIA();
+}
+
+async function adicionarWishlistIA() {
+  var tk = normTk(document.getElementById('w-ticker').value);
+  if (!tk) return alert('Digite o código do papel!');
+  var pAtu = 0;
+  try {
+    var url = 'https://brapi.dev/api/quote/' + tk + (brapiToken ? '?token=' + brapiToken : '');
+    var r = await fetch(url);
+    var d = await r.json();
+    if (d && d.results && d.results[0] && d.results[0].regularMarketPrice) pAtu = Number(d.results[0].regularMarketPrice);
+  } catch(e) {}
+  if (!pAtu && state.marketMeta && state.marketMeta[tk] && state.marketMeta[tk].atual) pAtu = Number(state.marketMeta[tk].atual);
+  var b = baseFund[tk];
+  if (!pAtu && b) pAtu = b.p;
+  if (!pAtu) {
+    var manual = prompt('Informe a cotação atual de ' + tk + ' conforme o Status Invest:', '10.00');
+    pAtu = parseFloat((manual || '10').replace(',', '.')) || 10.00;
+  }
+  var teto = calcTeto(tk, pAtu);
+  var form = b ? b.f : (tk.endsWith('11') ? 'Bazin FII (DY 9%)' : 'Graham Valuation');
+
+  if (!state.wishlist) state.wishlist = [];
+  var idx = state.wishlist.findIndex(function(w){ return w.ticker === tk; });
+  if (idx >= 0) { state.wishlist[idx].atual = pAtu; state.wishlist[idx].teto = teto; state.wishlist[idx].formula = form; }
+  else { state.wishlist.push({ id: Date.now(), ticker: tk, atual: pAtu, teto: teto, formula: form }); }
+  document.getElementById('w-ticker').value = '';
+  salvarEstado(true);
+}
+
+function editWishCampo(id, campo, val) {
+  var v = parseFloat(String(val).replace(',', '.'));
+  if (isNaN(v) || v <= 0) return;
+  state.wishlist.forEach(function(w){ if (w.id === id) w[campo] = v; });
+  salvarEstado(true);
+}
+
+function excluirWishlist(id) {
+  state.wishlist = state.wishlist.filter(function(w){ return w.id !== id; });
+  salvarEstado(true);
+}
+
+function gerarAporteInteligente() {
+  var ativos = consolidarAtivos();
+  var disp = (parseFloat(document.getElementById('in-aporte').value)||0) + (parseFloat(document.getElementById('in-div-reinv').value)||0);
+  var est = document.getElementById('in-estrategia-aporte').value;
+  document.getElementById('aporte-disp').innerText = brl(disp);
+  var box = document.getElementById('lista-sugestao-aporte');
+  if (ativos.length === 0 || disp <= 0) { box.innerHTML = 'Cadastre ativos.'; return; }
+
+  var fiis = ativos.filter(function(a){ return a.classe==='FII'; }).map(function(f){
+    var m = Math.ceil(f.atual / (f.divCota||0.085));
+    return { ...f, prog: (f.qtd/m)*100, faltam: Math.max(0, m-f.qtd), teto: calcTeto(f.ticker, f.atual) };
+  }).sort(function(a,b){ return b.prog - a.prog; });
+
+  var acoes = ativos.filter(function(a){ return a.classe==='ACAO'; }).map(function(ac){
+    var t = calcTeto(ac.ticker, ac.atual);
+    return { ...ac, teto: t, desc: ((t-ac.atual)/t)*100 };
+  }).sort(function(a,b){ return b.desc - a.desc; });
+
+  var oF = 0, oA = 0;
+  if (est === 'BALANCEADA') { oF = disp * 0.42; oA = disp * 0.33; }
+  else if (est === 'FIIS') { oF = disp * 0.75; oA = 0; }
+  else if (est === 'ACOES') { oF = 0; oA = disp * 0.75; }
+  else if (est === 'SOMENTE_FIIS') { oF = disp; oA = 0; }
+  else if (est === 'SOMENTE_ACOES') { oF = 0; oA = disp; }
+
+  ultimoCarrinho = []; var gasto = 0;
+
+  if (oF > 0 && fiis.length > 0) {
+    var qtdFills = est === 'SOMENTE_FIIS' ? 3 : 2;
+    fiis.slice(0, qtdFills).forEach(function(f){
+      var verba = oF / Math.min(fiis.length, qtdFills);
+      var q = Math.floor(verba / f.atual);
+      if (q > 0 && gasto + q*f.atual <= disp) {
+        gasto += q*f.atual;
+        ultimoCarrinho.push({ ticker:f.ticker, classe:'FII', setor:f.setor, qtd:q, preco:f.atual, div:f.divCota, total:q*f.atual, mot:'🔥 Magic Number: '+f.prog.toFixed(1)+'% (faltam '+f.faltam+' cotas)' });
+      }
+    });
+  }
+  if (oA > 0 && acoes.length > 0) {
+    var qtdAcoes = est === 'SOMENTE_ACOES' ? 3 : 2;
+    acoes.slice(0, qtdAcoes).forEach(function(ac){
+      var verba = oA / Math.min(acoes.length, qtdAcoes);
+      var q = Math.floor(verba / ac.atual);
+      if (q > 0 && gasto + q*ac.atual <= disp) {
+        gasto += q*ac.atual;
+        ultimoCarrinho.push({ ticker:ac.ticker, classe:'ACAO', setor:ac.setor, qtd:q, preco:ac.atual, div:ac.divCota, total:q*ac.atual, mot:'💎 Desconto: '+ac.desc.toFixed(1)+'% abaixo do Teto ('+brl(ac.teto)+')' });
+      }
+    });
+  }
+  var sobra = disp - gasto;
+  if (sobra >= 1 && est !== 'SOMENTE_FIIS' && est !== 'SOMENTE_ACOES') {
+    ultimoCarrinho.push({ ticker:'TESOURO RESERVA', classe:'SELIC', setor:'Reserva de Emergência', qtd:Number(sobra.toFixed(2)), preco:1, div:0, total:sobra, mot:'🛡️ Fortalecer Reserva de Emergência' });
+  }
+
+  box.innerHTML = ultimoCarrinho.map(function(it, i){
+    var rf = it.classe==='SELIC';
+    return '<div style="background:#090d16; border:1px solid #1f2937; padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">' +
+      '<div><span class="badge b-'+it.classe+'">'+it.classe+'</span> <strong class="mono">'+it.ticker+'</strong><div style="font-size:11px; color:#94a3b8;">'+it.mot+'</div></div>' +
+      '<div style="display:flex; align-items:center; gap:10px;"><div class="text-right"><strong class="mono" style="color:#10b981; font-size:12px;">'+(rf?brl(it.total):it.qtd+' cotas')+'</strong><div class="mono" style="font-size:10px;">'+brl(it.total)+'</div></div>' +
+      '<button type="button" class="btn-dark" style="color:#10b981; border-color:#10b981;" onclick="lancarDoCarrinhoIdx('+i+')">⚡ Lançar</button></div></div>';
+  }).join('');
+}
+
+function lancarDoCarrinhoIdx(i) {
+  var it = ultimoCarrinho[i]; if (!it) return;
+  abrirModalOrdem();
+  document.getElementById('o-ticker').value = it.ticker;
+  document.getElementById('o-classe').value = it.classe;
+  document.getElementById('o-setor').value = it.setor;
+  verificarClasseRendaFixa();
+  document.getElementById('o-qtd').value = it.qtd;
+  if (it.classe !== 'SELIC' && it.classe !== 'IPCA') document.getElementById('o-preco').value = it.preco;
+  document.getElementById('o-atual').value = it.preco;
+  document.getElementById('o-div').value = it.div || 0;
+  simularPM();
+}
+
+function registrarTimeline(atu, inv) {
+  var m = new Date().toISOString().slice(0, 7);
+  if (!state.timeline) state.timeline = [];
+  var idx = state.timeline.findIndex(function(t){ return t.mes === m; });
+  if (idx >= 0) { state.timeline[idx].patrimonio = atu; state.timeline[idx].custo = inv; state.timeline[idx].lucro = atu - inv; }
+  else { state.timeline.push({ mes: m, patrimonio: atu, custo: inv, lucro: atu - inv }); }
+}
+
+function calcularRebalanceamento() {
+  var ativos = consolidarAtivos(); var tot = 0; var cl = { SELIC:0, IPCA:0, FII:0, ACAO:0 };
+  ativos.forEach(function(a){ var v = a.qtd*a.atual; tot += v; cl[a.classe] = (cl[a.classe]||0)+v; });
+  var pS = parseFloat(document.getElementById('rb-selic').value)||0, pI = parseFloat(document.getElementById('rb-ipca').value)||0, pF = parseFloat(document.getElementById('rb-fiis').value)||0, pA = parseFloat(document.getElementById('rb-acoes').value)||0;
+  var ap = parseFloat(document.getElementById('rb-aporte').value)||0, soma = (pS+pI+pF+pA)||1;
+  var alvos = { SELIC:pS/soma, IPCA:pI/soma, FII:pF/soma, ACAO:pA/soma }, nomes = { SELIC:'Tesouro Reserva', IPCA:'Tesouro IPCA+', FII:'FIIs', ACAO:'Ações' };
+  document.getElementById('painel-rebalance').innerHTML = ['SELIC','IPCA','FII','ACAO'].map(function(k){
+    var atV = cl[k]||0, atP = tot>0 ? (atV/tot)*100 : 0, sug = Math.max(0, (tot+ap)*alvos[k] - atV);
+    return '<div class="card" style="padding:9px;"><div style="display:flex; justify-content:space-between; font-size:12px;"><strong>'+nomes[k]+'</strong><span class="mono">Atual: '+atP.toFixed(1)+'%</span></div><div style="font-size:12px; color:#10b981;">Sugerido: <strong class="mono">'+brl(sug)+'</strong></div></div>';
+  }).join('');
+}
+
+function calcularAposentadoria() {
+  var c = parseFloat(document.getElementById('ret-custo').value)||0, ap = parseFloat(document.getElementById('ret-aporte').value)||0, dy = (parseFloat(document.getElementById('ret-dy').value)||8.5)/100;
+  var stress = (parseFloat(document.getElementById('ret-stress').value)||0)/100;
+  var alvo = dy>0 ? (c*12)/dy : 0; 
+  document.getElementById('ret-patrimonio-alvo').innerText = brl(alvo);
+  var m = 0, pat = 0; consolidarAtivos().forEach(function(a){ pat += a.qtd*a.atual; });
+  
+  if (stress > 0) {
+    var patStressed = pat * (1 - stress);
+    document.getElementById('ret-stress-res').innerHTML = '⚠️ Patrimônio sob Stress (-' + (stress*100) + '%): <span style="color:#f43f5e">' + brl(patStressed) + '</span>';
+  } else {
+    document.getElementById('ret-stress-res').innerHTML = '';
+  }
+
+  while (pat < alvo && m < 1200 && ap > 0) { pat += ap + pat*(dy/12); m++; }
+  document.getElementById('ret-tempo').innerText = Math.floor(m/12) + ' anos e ' + (m%12) + ' meses';
+  document.getElementById('ret-obs').innerText = 'Aportando ' + brl(ap) + '/mês a ' + (dy*100).toFixed(1) + '% a.a.';
+}
+
+function renderizarTudo() {
+  var ativos = consolidarAtivos();
+  document.getElementById('banner-vazio').style.display = ativos.length === 0 ? 'flex' : 'none';
+  var totI = 0, totA = 0, renda = 0, cl = { SELIC:0, IPCA:0, FII:0, ACAO:0 }, set = {};
+  ativos.forEach(function(a){
+    var v = a.qtd * a.atual; totI += a.custoTotal; totA += v;
+    cl[a.classe] = (cl[a.classe]||0) + v; set[a.setor] = (set[a.setor]||0) + v; renda += a.qtd * (a.divCota||0);
+  });
+
+  registrarTimeline(totA, totI); calcularRebalanceamento(); calcularAposentadoria(); gerarAporteInteligente();
+  var luc = totA - totI, rent = totI > 0 ? (luc/totI)*100 : 0;
+  
+  document.getElementById('header-total').innerText = brl(totA);
+  document.getElementById('kpi-patrimonio').innerText = brl(totA);
+  document.getElementById('kpi-investido').innerText = 'Custo: ' + brl(totI);
+
+  var corLucro = luc > 0 ? '#10b981' : (luc < 0 ? '#f43f5e' : '#94a3b8');
+  var elLucro = document.getElementById('kpi-lucro');
+  var elRent = document.getElementById('kpi-rentab');
+  if (elLucro) {
+    elLucro.innerText = (luc > 0 ? '+' : '') + brl(luc);
+    elLucro.style.color = corLucro;
+  }
+  if (elRent) {
+    elRent.innerText = rent.toFixed(2) + '% sobre o custo';
+    elRent.style.color = corLucro;
+  }
+
+  document.getElementById('kpi-renda').innerText = brl(renda) + ' / mês';
+  document.getElementById('kpi-renda-ano').innerText = 'Isento • ~' + brl(renda*12) + '/ano';
+  document.getElementById('kpi-reserva').innerText = brl(cl.SELIC);
+  document.getElementById('kpi-reserva-meta').innerText = 'Meta R$ 2k: ' + Math.min(100, (cl.SELIC/2000)*100).toFixed(1) + '%';
+
+  var nCl = [{id:'SELIC',n:'🟣 Tesouro Reserva',c:'#a855f7'},{id:'IPCA',n:'🔵 Tesouro IPCA+',c:'#3b82f6'},{id:'FII',n:'🟡 FIIs',c:'#f59e0b'},{id:'ACAO',n:'🟢 Ações',c:'#10b981'}];
+  document.getElementById('painel-classes').innerHTML = nCl.map(function(c){
+    var v = cl[c.id]||0, p = totA>0 ? (v/totA)*100 : 0;
+    return '<div><div style="display:flex; justify-content:space-between; font-size:11px;"><span>'+c.n+'</span><span class="mono">'+brl(v)+' ('+p.toFixed(1)+'%)</span></div><div class="bar-bg"><div style="height:100%; width:'+p+'%; background:'+c.c+';"></div></div></div>';
+  }).join('');
+
+  document.getElementById('painel-setores').innerHTML = Object.keys(set).map(function(s){
+    var p = totA>0 ? (set[s]/totA)*100 : 0;
+    return '<div><div style="display:flex; justify-content:space-between; font-size:11px;"><span>'+s+'</span><span class="mono">'+p.toFixed(1)+'%</span></div><div class="bar-bg"><div style="height:100%; width:'+p+'%; background:#38bdf8;"></div></div></div>';
+  }).join('');
+
+  document.getElementById('painel-barras-ativos').innerHTML = ativos.map(function(a){
+    var v = a.qtd*a.atual, p = totA>0 ? (v/totA)*100 : 0;
+    return '<div><div style="display:flex; justify-content:space-between; font-size:11px;"><strong class="mono">'+a.ticker+'</strong><span class="mono">'+brl(v)+'</span></div><div class="bar-bg"><div style="height:100%; width:'+p+'%; background:#10b981;"></div></div></div>';
+  }).join('');
+
+  document.getElementById('texto-mentor').innerHTML = 'Carteira [<strong>' + carteiraAtiva + '</strong>] gerando <strong>' + brl(renda) + '/mês</strong> isentos de IR com patrimônio de <strong>' + brl(totA) + '</strong>.';
+
+  document.getElementById('tabela-carteira').innerHTML = ativos.map(function(a){
+    var v = a.qtd*a.atual, l = v - a.custoTotal, lp = a.custoTotal>0 ? (l/a.custoTotal)*100 : 0, rf = (a.classe==='SELIC'||a.classe==='IPCA');
+    return '<tr><td class="mono" style="font-weight:bold; color:#fff;">'+a.ticker+'</td><td><span class="badge b-'+a.classe+'">'+a.classe+'</span> '+a.setor+'</td><td class="text-right mono">'+(rf?brl(a.qtd):a.qtd)+'</td><td class="text-right mono" style="color:#10b981;">'+(rf?'—':brl(a.pm))+'</td><td class="text-right"><input type="number" step="0.01" value="'+a.atual.toFixed(2)+'" onchange="atualizarMeta(\''+a.ticker+'\',\'atual\',this.value)" class="mono text-right" style="width:70px;"></td><td class="text-right"><input type="number" step="0.001" value="'+(a.divCota||0).toFixed(3)+'" onchange="atualizarMeta(\''+a.ticker+'\',\'divCota\',this.value)" class="mono text-right" style="width:65px; color:#fbbf24;"></td><td class="text-right mono">'+brl(a.custoTotal)+'</td><td class="text-right mono" style="font-weight:bold;">'+brl(v)+'</td><td class="text-right mono" style="color:'+(l>=0?'#10b981':'#f43f5e')+'">'+brl(l)+' ('+lp.toFixed(1)+'%)</td><td class="text-right mono">'+(totA>0?((v/totA)*100).toFixed(1):0)+'%</td></tr>';
+  }).join('');
+
+  if (state.wishlist && state.wishlist.length > 0) {
+    state.wishlist.sort(function(a,b){ return ((b.teto-b.atual)/b.teto) - ((a.teto-a.atual)/a.teto); });
+    document.getElementById('tabela-wishlist').innerHTML = state.wishlist.map(function(w){
+      var d = diagnosticarWish(w.ticker, w.atual, w.teto);
+      return '<tr><td class="mono" style="font-weight:bold; color:#fff;">'+w.ticker+' <span style="font-size:10px; color:#94a3b8; font-weight:normal;">('+d.nome+')</span></td>' +
+        '<td class="text-right"><input type="number" step="0.01" value="'+w.atual.toFixed(2)+'" onchange="editWishCampo('+w.id+',\'atual\',this.value)" class="mono text-right" style="width:72px;"></td>' +
+        '<td class="text-right"><input type="number" step="0.01" value="'+w.teto.toFixed(2)+'" onchange="editWishCampo('+w.id+',\'teto\',this.value)" class="mono text-right" style="width:72px; color:#38bdf8; font-weight:bold;"></td>' +
+        '<td class="text-right mono ' + d.pulse + '" style="color:'+d.cor+'; font-weight:bold;">'+(d.desc>=0?'+':'')+d.desc.toFixed(1)+'%</td><td style="font-size:11px; color:#94a3b8;">'+w.formula+'</td><td class="text-center"><span class="badge ' + d.pulse + '" style="background:'+d.bg+'; color:'+d.cor+';">'+d.st+'</span></td><td class="text-center"><span style="color:#fda4af; cursor:pointer;" onclick="excluirWishlist('+w.id+')">✕</span></td></tr>';
+    }).join('');
+
+    document.getElementById('cards-analise-wishlist').innerHTML = state.wishlist.map(function(w){
+      var d = diagnosticarWish(w.ticker, w.atual, w.teto);
+      var pills = d.isF
+        ? '<div class="ind-pill"><span class="ind-label">P/VP</span><span class="ind-val">'+d.pvp.toFixed(2)+'x</span></div><div class="ind-pill"><span class="ind-label">Val. Patrimonial</span><span class="ind-val">'+brl(d.vp)+'</span></div><div class="ind-pill"><span class="ind-label">DY Anual</span><span class="ind-val" style="color:#fbbf24;">'+d.dy.toFixed(2)+'%</span></div><div class="ind-pill"><span class="ind-label">Div./Mês</span><span class="ind-val" style="color:#10b981;">'+brl(d.dm)+'</span></div><div class="ind-pill"><span class="ind-label">Preço Teto</span><span class="ind-val" style="color:#38bdf8;">'+brl(w.teto)+'</span></div>'
+        : '<div class="ind-pill"><span class="ind-label">P/L</span><span class="ind-val">'+d.pl.toFixed(1)+'x</span></div><div class="ind-pill"><span class="ind-label">P/VP</span><span class="ind-val">'+d.pvp.toFixed(2)+'x</span></div><div class="ind-pill"><span class="ind-label">DY Anual</span><span class="ind-val" style="color:#fbbf24;">'+d.dy.toFixed(2)+'%</span></div><div class="ind-pill"><span class="ind-label">ROE</span><span class="ind-val" style="color:#10b981;">'+d.roe.toFixed(1)+'%</span></div><div class="ind-pill"><span class="ind-label">Preço Teto</span><span class="ind-val" style="color:#38bdf8;">'+brl(w.teto)+'</span></div>';
+      return '<div class="card ' + d.pulse + '" style="border-left:4px solid '+d.cor+';"><div style="display:flex; justify-content:space-between; margin-bottom:8px;"><strong class="mono" style="font-size:14px; color:#fff;">'+w.ticker+' • '+d.nome+'</strong><span class="badge" style="background:'+d.bg+'; color:'+d.cor+';">'+d.st+'</span></div><div style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:8px;">'+pills+'</div><div style="font-size:11.5px; color:#cbd5e1; line-height:1.5; background:#090d16; padding:9px; border-radius:6px;">'+d.txt+'</div></div>';
+    }).join('');
+  } else {
+    document.getElementById('tabela-wishlist').innerHTML = '<tr><td colspan="7" class="text-center" style="padding:16px; color:#64748b;">Clique num ativo acima para analisar.</td></tr>';
+    document.getElementById('cards-analise-wishlist').innerHTML = '';
+  }
+
+  document.getElementById('grid-magic').innerHTML = ativos.filter(function(a){ return a.classe==='FII'; }).map(function(f){
+    var m = Math.ceil(f.atual / (f.divCota||0.085)), p = Math.min(100, (f.qtd/m)*100);
+    return '<div class="card"><div style="display:flex; justify-content:space-between;"><strong class="mono">'+f.ticker+'</strong><span class="mono" style="color:#10b981;">'+p.toFixed(1)+'%</span></div><div class="bar-bg"><div style="height:100%; width:'+p+'%; background:#10b981;"></div></div><div style="font-size:11px; color:#94a3b8;">Tem: '+f.qtd+' / Meta: '+m+' cotas (Faltam '+Math.max(0,m-f.qtd)+')</div></div>';
+  }).join('');
+
+  var sDiv = 0; (state.dividendos||[]).forEach(function(d){ sDiv += Number(d.valor)||0; });
+  document.getElementById('div-geral').innerText = brl(sDiv);
+  document.getElementById('div-media').innerText = brl(sDiv / Math.max(1, (state.dividendos||[]).length));
+  document.getElementById('tabela-div-extrato').innerHTML = (state.dividendos||[]).map(function(d){
+    return '<tr><td class="mono">'+d.mes+'</td><td class="mono">'+d.ticker+'</td><td class="text-right mono" style="color:#fbbf24;">'+brl(d.valor)+'</td><td class="text-center"><span style="color:#fda4af; cursor:pointer;" onclick="excluirDividendo('+d.id+')">✕</span></td></tr>';
+  }).join('');
+
+  document.getElementById('tabela-timeline').innerHTML = (state.timeline||[]).map(function(t){
+    return '<tr><td class="mono">'+t.mes+'</td><td class="text-right mono" style="color:#10b981;">'+brl(t.patrimonio)+'</td><td class="text-right mono">'+brl(t.custo)+'</td><td class="text-right mono">'+brl(t.lucro)+'</td></tr>';
+  }).join('');
+
+  document.getElementById('tabela-ordens').innerHTML = (state.orders||[]).map(function(o){
+    var rf = (o.classe==='SELIC'||o.classe==='IPCA'), tot = rf ? o.qtd : (o.qtd*o.preco + (o.taxas||0));
+    return '<tr><td class="mono">'+o.data+'</td><td class="mono">'+o.ticker+'</td><td>'+o.classe+'</td><td class="text-right mono">'+(rf?brl(o.qtd):o.qtd)+'</td><td class="text-right mono">'+(rf?'—':brl(o.preco))+'</td><td class="text-right mono">'+brl(o.taxas||0)+'</td><td class="text-right mono" style="color:#10b981;">'+brl(tot)+'</td><td class="text-center"><button type="button" class="btn-dark" onclick="excluirOrdem('+o.id+')">X</button></td></tr>';
+  }).join('');
+}
+
+function atualizarMeta(tk, c, v) {
+  if (!state.marketMeta[tk]) state.marketMeta[tk] = {};
+  state.marketMeta[tk][c] = parseFloat(v) || 0;
+  if (c === 'atual' && state.wishlist) state.wishlist.forEach(function(w){ if (w.ticker === tk) w.atual = parseFloat(v)||w.atual; });
+  salvarEstado(true);
+}
+
+function abrirModalOrdem() {
+  document.getElementById('o-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('o-ticker').value = ''; document.getElementById('o-qtd').value = '';
+  document.getElementById('o-classe').value = 'FII'; verificarClasseRendaFixa();
+  document.getElementById('modal-ordem').classList.remove('hidden');
+}
+function fecharModalOrdem() { document.getElementById('modal-ordem').classList.add('hidden'); }
+
+function verificarClasseRendaFixa() {
+  var rf = (document.getElementById('o-classe').value === 'SELIC' || document.getElementById('o-classe').value === 'IPCA');
+  document.getElementById('bloco-qtd-preco').innerHTML = rf
+    ? '<div style="grid-column:span 3;"><label>Valor Aporte (R$)</label><input type="number" id="o-qtd" step="0.01" oninput="simularPM()"></div>'
+    : '<div><label>Qtd</label><input type="number" id="o-qtd" step="0.01" oninput="simularPM()"></div><div><label>Preço (R$)</label><input type="number" id="o-preco" step="0.01" oninput="simularPM()"></div><div><label>Taxas</label><input type="number" id="o-taxas" step="0.01" value="0" oninput="simularPM()"></div>';
+}
+
+function preencherRapido(tk, cl, s, at, dv) {
+  document.getElementById('o-ticker').value = tk; document.getElementById('o-classe').value = cl; document.getElementById('o-setor').value = s;
+  verificarClasseRendaFixa(); document.getElementById('o-atual').value = at; document.getElementById('o-div').value = dv;
+  if (cl==='SELIC'||cl==='IPCA') document.getElementById('o-qtd').value = 150;
+  else document.getElementById('o-preco').value = at;
+  simularPM();
+}
+
+function simularPM() {
+  var rf = (document.getElementById('o-classe').value === 'SELIC' || document.getElementById('o-classe').value === 'IPCA');
+  var q = parseFloat(document.getElementById('o-qtd').value)||0;
+  if (rf) { document.getElementById('prev-custo').innerText = brl(q); document.getElementById('prev-pm').innerText = 'R$ 1,00'; return; }
+  var p = parseFloat(document.getElementById('o-preco').value)||0, t = parseFloat(document.getElementById('o-taxas').value)||0;
+  var c = q*p + t; document.getElementById('prev-custo').innerText = brl(c);
+  var tk = normTk(document.getElementById('o-ticker').value);
+  var ex = consolidarAtivos().find(function(a){ return a.ticker === tk; });
+  var qT = (ex?ex.qtd:0)+q, cT = (ex?ex.custoTotal:0)+c;
+  document.getElementById('prev-pm').innerText = brl(qT>0 ? cT/qT : 0);
+}
+
+function confirmarOrdem() {
+  var tk = normTk(document.getElementById('o-ticker').value), cl = document.getElementById('o-classe').value;
+  var rf = (cl==='SELIC'||cl==='IPCA'), q = parseFloat(document.getElementById('o-qtd').value);
+  var p = rf ? 1 : parseFloat(document.getElementById('o-preco').value);
+  var tx = rf ? 0 : (parseFloat(document.getElementById('o-taxas').value)||0);
+  if (!tk || isNaN(q) || q<=0) return alert('Preencha os dados!');
+  state.orders.unshift({ id:Date.now(), data:document.getElementById('o-data').value, ticker:tk, classe:cl, setor:document.getElementById('o-setor').value||'Geral', qtd:q, preco:p, taxas:tx });
+  state.marketMeta[tk] = { classe:cl, setor:document.getElementById('o-setor').value||'Geral', atual:rf?1:(parseFloat(document.getElementById('o-atual').value)||p), divCota:parseFloat(document.getElementById('o-div').value)||0 };
+  fecharModalOrdem(); salvarEstado(true);
+}
+
+function excluirOrdem(id) { state.orders = state.orders.filter(function(o){ return o.id !== id; }); salvarEstado(true); }
+function salvarDividendo() {
+  var m = document.getElementById('d-mes').value, tk = normTk(document.getElementById('d-ticker').value), v = parseFloat(document.getElementById('d-valor').value);
+  if (!tk || isNaN(v)) return;
+  state.dividendos.unshift({ id:Date.now(), mes:m, ticker:tk, valor:v }); salvarEstado(true);
+}
+function excluirDividendo(id) { state.dividendos = state.dividendos.filter(function(d){ return d.id !== id; }); salvarEstado(true); }
+function exportarPC() { var a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(statePorCarteira)); a.download = "Backup_MentorPro_Enterprise.json"; a.click(); }
+function importarPC(ev) { var f = ev.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function(e){ try { var parsed = JSON.parse(e.target.result); if(parsed && typeof parsed === 'object') { statePorCarteira = parsed; state = statePorCarteira[carteiraAtiva] || statePorCarteira['Principal']; salvarEstado(true); alert('Backup restaurado com sucesso!'); } } catch(err) { alert('Arquivo inválido.'); } }; r.readAsText(f); }
+function zerarTudo() { if (confirm('Zerar carteira ativa?')) { state = { orders:[], marketMeta:{}, dividendos:[], timeline:[], wishlist:[] }; salvarEstado(false); } }
+function abrirModalCloud() { document.getElementById('in-cloud-url').value = cloudUrl; document.getElementById('in-brapi-token').value = brapiToken; document.getElementById('modal-cloud').classList.remove('hidden'); }
+function fecharModalCloud() { document.getElementById('modal-cloud').classList.add('hidden'); }
+function salvarConfigCloud() { cloudUrl = document.getElementById('in-cloud-url').value.trim(); brapiToken = document.getElementById('in-brapi-token').value.trim(); localStorage.setItem('mp_cloud_v360', cloudUrl); localStorage.setItem('mp_brapi_token', brapiToken); fecharModalCloud(); renderizarTudo(); alert('Configurações salvas!'); }
+function salvarNoDrive(sil) { if (!cloudUrl) return abrirModalCloud(); fetch(cloudUrl, { method:'POST', mode:'no-cors', body:JSON.stringify(statePorCarteira) }).then(function(){ if (!sil) alert('Salvo no Drive!'); }); }
+function puxarDoDrive() { if (!cloudUrl) return abrirModalCloud(); fetch(cloudUrl).then(function(r){ return r.json(); }).then(function(d){ if (d && typeof d === 'object') { statePorCarteira = d; state = statePorCarteira[carteiraAtiva] || statePorCarteira['Principal']; salvarEstado(false); alert('Dados carregados do Drive!'); } }); }
+
+async function buscarCotacoesWeb() {
+  var ativos = consolidarAtivos();
+  var tks = ativos.filter(function(a){ return a.classe==='FII'||a.classe==='ACAO'; }).map(function(a){ return a.ticker; });
+  if (tks.length === 0) return alert('Nenhum ativo de Renda Variável na carteira para atualizar.');
+
+  var atualizados = 0;
+  for (var i = 0; i < tks.length; i++) {
+    var tk = tks[i];
+    try {
+      var url = 'https://brapi.dev/api/quote/' + tk + (brapiToken ? '?token=' + brapiToken : '');
+      var r = await fetch(url);
+      var d = await r.json();
+      if (d && d.results && d.results[0] && d.results[0].regularMarketPrice) {
+        var p = Number(d.results[0].regularMarketPrice);
+        if (!state.marketMeta[tk]) state.marketMeta[tk] = {};
+        state.marketMeta[tk].atual = p;
+        atualizados++;
+      }
+    } catch(err) {}
+  }
+
+  if (atualizados > 0) {
+    salvarEstado(true);
+    alert('Cotações atualizadas via B3 (' + atualizados + ' ativos)!');
+  } else {
+    ativos.forEach(function(a){
+      if ((a.classe==='FII'||a.classe==='ACAO') && baseFund[a.ticker]) {
+        if (!state.marketMeta[a.ticker]) state.marketMeta[a.ticker] = {};
+        state.marketMeta[a.ticker].atual = baseFund[a.ticker].p;
+      }
+    });
+    salvarEstado(true);
+    alert('Cotações sincronizadas com a base interna.');
+  }
+}
+
+async function buscarMacroEconomia() {
+  try {
+    var r = await fetch('https://brapi.dev/api/v2/prime-rate');
+    var d = await r.json();
+    if(d && d.primeRate && d.primeRate[0]) {
+      document.getElementById('macro-selic').innerText = d.primeRate[0].value + '%';
+    }
+  } catch(e) {}
+}
+
+buscarMacroEconomia();
+renderizarTudo();
+</script>
+</body>
+</html>
